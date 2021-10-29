@@ -18,11 +18,21 @@ capture.set(4, 720)
 while True:
     # 1. Read capture
     success, img = capture.read()
-    img = cv2.flip(img, 1)
 
     # 2. Find Hand Landmarks
-    img = detector.findHands(img, draw=False)
+    hands, img = detector.findHands(img, flipType=True)
+
+    if hands:
+        lmList = hands[0]["lmList"]  # List of 21 Landmark points
+        fingers = detector.fingersUp(hands[0])
+        print(fingers)
+        if fingers == [0, 1, 0, 0, 0]:
+            print("draw")
+        elif fingers == [0, 1, 1, 0, 0]:
+            print("erase")
+
     cv2.imshow("Canvas", img)
+
     if cv2.waitKey(1) == ord('q'):
         break
 
@@ -34,12 +44,6 @@ while True:
     #     print(fingersx)
 
     # print(lmList)
-
-
-    if fingers == [0, 0, 0, 1, 0]:
-        print("draw")
-    elif fingers == [0, 0, 1, 1, 0]:
-        print("erase")
 
 
 #voice reg: color, size
